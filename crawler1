@@ -1,0 +1,234 @@
+from bs4 import BeautifulSoup#(解析库)
+import requests
+import pandas as pd#处理数据时用的库
+import numpy as np
+import re
+from pandas import DataFrame,Series
+#(以上是爬虫用到得库)
+import random
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import matplotlib.animation as animation
+import matplotlib
+from IPython.display import HTML
+import numpy as np
+from matplotlib.font_manager import FontProperties
+plt.rcParams['font.sans-serif'] = ['SimHei']#使用matplotlib显示中文标签
+#以上是数据转图片，图片转视频用到的库
+#===========================爬虫爬取天气存储为csv文件====================================(行名为城市名，列名为时间,包含了数据清洗部分)
+def pachong():
+    def get_temperature(url):
+        headers = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'
+        }
+
+        #获取url
+        # 福州天气（19年1月份）网址:http://www.tianqihoubao.com/lishi/fujianfuzhou/month/201901.html
+        resp = requests.get(url)
+        #跳转页面,反馈
+        html = resp.content.decode('gbk')
+        soup = BeautifulSoup(html,'html.parser')
+        #（解析库，默认的是html。parser比较慢）
+        tr_list = soup.find_all('tr')
+        #(接受tr标签下的所有数据)
+        dates,toptemp,lowtemp=[],[],[]
+        for data in tr_list[1:]:
+            #（遍历tr_luist）
+            sub_data = data.text.split()#以字符形式拆分data
+            nian = sub_data[0][0:4]
+            yue = sub_data[0][5:7]
+            ri = sub_data[0][8:10]
+            riqi1 = nian + yue + ri#去除年月日汉字
+            dates.append(riqi1)#日期
+            toptemp = list(toptemp)
+            #强制准换成list,不然不能append
+            toptemp.append((sub_data[3])[:2])
+            #最高气温，含摄氏度符号
+            #lowtemp.append(sub_data[5])
+            # #最低气温，可以考虑加以个最低温度图表
+        toptemp = str(toptemp)
+        c = re.findall(r"\d+", toptemp)
+        #利用正则表达式，只保留了数字
+        _data = pd.DataFrame()
+        _data['日期'] = dates
+        #把日期保存到data里的日期一列
+        _data['最高温度']= c
+        #把温度保顿道data的最高温度一列
+        #_data['最低温度'] = lowtemp
+        return _data
+        #返回_data的df
+
+    def riqi(i,j):
+        #一个可变的url函数
+        cs = ['beijing', 'tianjin', 'shijiazhuang', 'taiyuan',
+              'huhehaote', 'shenyang', 'changchun', 'haerbin', 'shanghai',
+              'nanjing','hangzhou','hefei','fujianfuzhou','nanchang','jinan',
+              'zhengzhou','wuhan','changsha','guangzhou','nanning','haikou',
+              'chongqing','chengdu','guiyang','kunming','lasa','xian','lanzhou',
+              'xining','yinchuan','wulumuqi','taibei','xianggang','aomen']
+        rula ='http://www.tianqihoubao.com/lishi/'
+        url1 = (rula + cs[j] +'/month/'+ str(i+201900) +'.html')
+        #写入网址
+        data_11 = get_temperature(url1)
+        return  data_11
+        #返回想要的url:data_11
+
+    def yige(j):
+        #一个城市的温度情况
+        list = [riqi(1, j), riqi(2, j), riqi(3, j), riqi(4, j), riqi(5, j),
+                riqi(6, j), riqi(7, j), riqi(8, j), riqi(9, j), riqi(10, j), riqi(11, j), riqi(12, j)]
+        #list是一个城市1月到12月的所有气温的df
+        data_1 = pd.concat(list).reset_index(drop=True)
+        return data_1
+#所有城市温度
+    df1=yige(0)
+    print(1)
+    df2=yige(1)
+    print(2)
+    df3 = yige(2)
+    print(3)
+    df4 = yige(3)
+    print(4)
+    df5 = yige(4)
+    print(5)
+    df6 = yige(5)
+    df7 = yige(6)
+    df8 = yige(7)
+    df9 = yige(8)
+    df10 = yige(9)
+    print(10)
+    df11 = yige(10)
+    df12 = yige(11)
+    df13 = yige(12)
+    df14 = yige(13)
+    df15 = yige(14)
+    print(15)
+    df16 = yige(15)
+    df17 = yige(16)
+    df18 = yige(17)
+    df19 = yige(18)
+    df20 = yige(19)
+    df21 = yige(20)
+    print(20)
+    df22 = yige(21)
+    df23 = yige(22)
+    df24 = yige(23)
+    df25 = yige(24)
+    df26 = yige(25)
+    print(25)
+    df27 = yige(26)
+    df28 = yige(27)
+    df29 = yige(28)
+    df30 = yige(29)
+    df31 = yige(30)
+    print(30)
+    df32 = yige(31)
+    df33 = yige(32)
+    df34 = yige(33)
+    data = pd.concat([df1,df2,df3,df4,df5,df6,df7,df8,df9,df19,df11,df12,df13,df14,df15,df16,df17,df18,df19,
+                      df20,df21,df22,df23,df24,df25,df26,df27,df28,df29,df30,df31,df32,df33,df34],axis=1)
+    #把34个df拼接成一个df
+    data.columns = ['A1', 'A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14',
+                    'A15','A16','A17','A18','A19','A20','A21','A22','A23','A24','A25','A26','A27',
+                    'A28','A29','A30','A31','A32','A33','A34','A35','A36','A37','A38','A39','A40',
+                    'A41','A42','A43','A44','A45','A46','A47','A48','A49','A50','A51','A52','A53',
+                    'A54','A55','A56','A57','A58','A59','A60','A61','A62','A63','A64','A65','A66','A67','A68']
+    #拼接的时候日期那列还有，就有这么多列
+    data.drop(['A3','A5','A7','A9','A11','A13','A15','A17','A19','A21','A23','A25','A27','A29','A31','A33','A35','A37',
+               'A39','A41','A43','A45','A47','A49','A51','A53','A55','A57','A59','A61','A63','A65','A67',],axis=1, inplace=True)
+    #删除里面重复的日期列
+    data.columns= ['日期','北京', '天津', '石家庄', '太原','呼和浩特', '沈阳', '长春', '哈尔滨', '上海',
+      '南京','杭州','合肥','福州','南昌','济南','郑州','武汉','长沙','广州','南宁','海口',
+      '重庆','成都','贵阳','昆明','拉萨','西安','兰州','西宁','银川','乌鲁木齐','台北','香港','澳门']
+    #重新设置列名字，列名为城市名
+    data.to_csv('中国2019年各大省会直辖市天气.csv',index=None,encoding='utf-8')
+    #保存到当前文件夹下.csv文件
+    #不显示索引，行名为城市名，保存为福建省2019年天气。csv，编码格式为utf-8
+
+def randomcolor():
+    # 用randaom函数生成随机颜色代码，randomcolor生成颜色代码原理，从[1-F]15个数字随机组成6位字符，前面加上‘#’
+    colorlist = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+    color = ''
+    for i in range(6):
+        color += random.choice(colorlist)
+    return '#' + color
+    # 返回颜色代码
+matplotlib.rcParams['animation.embed_limit'] = 2**128#防止动漫内存太大，报错
+plt.rcParams['font.sans-serif'] = ['SimHei']
+
+#去除重复的城市名
+color_list = []
+def shipin():
+    df = pd.read_csv('D:\\file\\ok\\中国2019年各大省会直辖市天气.csv')
+    # 读取出来得 csv 文件是有index的
+    # 以下为重新蛇者数据
+    df = df.set_index("日期")
+    df2 = df.stack()
+    df2.index = df2.index.rename('name', level=1)
+    df2.name = 'value'
+    df2 = df2.reset_index()
+    a = set(df2['日期'])
+    # 去除重复的日期.所有日期，之后循环得的时候会用到
+    area_list1 = set(df2['name'])
+    for i in range(len(area_list1)):
+        # randaom写随机颜色
+        str_1 = randomcolor()
+        color_list.append(str_1)
+        str_1 = randomcolor()
+    area_list_1 = [i for i in area_list1]
+    colors =dict(zip(area_list_1,color_list))
+    # 颜色与城市一一对应
+    fig, ax = plt.subplots(figsize=(15, 8))
+    # 用plt加理图表，figsize表示图标长宽，ax表示标签
+    def huatu(riqi):
+        dff = df2[df2['日期'].eq(riqi)].sort_values(by='value', ascending=True).tail(10)
+        value1 = dff['value']
+        # 温度值放到value1中
+        name1 = dff['name']
+        #把城市名放到name1中
+        ax.clear()
+        dx = dff['value'].max() / 200
+        ax.barh(name1, value1, color=[colors[x] for x in name1])
+        # 显示颜色、城市名字
+        dx = value1.max() / 200
+        # ax.text函数包括ax.text(x,y,font,va,ha）画图标注
+        # x,y表示位置
+        # name表示显示文本
+        # va,ba分别表示水平位置，垂直位置
+        for i, (value, name) in enumerate(zip(value1, name1)):
+            ax.text(value - dx, i, name, size=14, weight=600, ha='right', va='center')
+            # 设置字体（城市）
+            ax.text(value + dx, i, f'{value:,.0f}', size=14, ha='left', va='center')
+            # 设置字体（温度）
+        # ax.transAxes表示轴坐标系，（1，0.4）表示放置位置
+        ax.text(1, 0.4, riqi, transform=ax.transAxes, color='#777777', size=46, ha='right', weight='800')
+        ax.text(0, 1.06, 'Top temperature', transform=ax.transAxes, color='#777777', size=12)
+        # 表示刻度尺格式set_major_formatter
+        ax.xaxis.set_major_formatter(ticker.StrMethodFormatter('{x:,.0f}'))
+        ax.xaxis.set_ticks_position('top')
+        ax.tick_params(axis='x', color='#777777', labelsize=12)
+        ax.set_yticks([])
+        ax.margins(0, 0.001)
+        # margins表示自动缩放余额
+        ax.grid(which='major', axis='x', linestyle='-')
+        # 设置后面的网格
+        ax.set_axisbelow(True)
+        # 刻度线和网格线是在图标上方还是下方，True为下方
+        ax.text(0, 1.15, '2019年中国各大省会以及直辖市最高气温图', transform=ax.transAxes, size=24,
+                weight=600, ha='left', va='top', fontsize=29)
+        ax.text(1, 0, 'made by 郗虎勇', transform=ax.transAxes, color='#777777', ha='right',
+                bbox=dict(facecolor='white', alpha=0.8,
+                          edgecolor='white'), fontsize=10)
+        plt.box(False)
+        # 取消图表周围的方框显示
+    fig, ax = plt.subplots(figsize=(15, 8))
+    animator = animation.FuncAnimation(fig, huatu, frames=a)
+#===============================将图片制成可视化视频====================================
+    animator.to_html5_video()
+    animator.save('D:/file/ok/34333333yiyue.mp4')
+
+if __name__=="__main__":
+
+    pachong()
+    shipin()
